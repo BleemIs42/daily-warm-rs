@@ -1,7 +1,11 @@
-pub mod mail;
+mod mail;
+
+use mail::Render;
 
 fn main() {
+    let data = "{\"Weather\":{\"City\":\"test city\"}}".to_string();
+    let mr = Render::new(data);
     println!("Hello, world!");
-    let addr_info = mail::parse_mail_addr(&String::from("user<user@test.com>"));
-    println!("addr: {}", addr_info.addr);
+    let mail =  mr.get_content();
+    println!("{}",mail);
 }
