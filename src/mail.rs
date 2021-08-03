@@ -2,53 +2,53 @@ use handlebars::Handlebars;
 use serde::{ Serialize, Deserialize };
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Weather{
-  City     :String,
-  // Temp     :String,
-  // Weather  :String,
-  // Air      :String,
-  // Humidity :String,
-  // Wind     :String,
-  // Limit    :String,
-  // Note     :String,
+  pub City     :String,
+  // pub Temp     :String,
+  // pub Weather  :String,
+  // pub Air      :String,
+  // pub Humidity :String,
+  // pub Wind     :String,
+  // pub Limit    :String,
+  // pub Note     :String,
 }
 #[derive(Serialize, Deserialize, Debug)]
 pub struct One{
-  Date     :String,
-  ImgURL   :String,
-  Sentence :String,
+  pub Date     :String,
+  pub ImgURL   :String,
+  pub Sentence :String,
 }
 #[derive(Serialize, Deserialize, Debug)]
 struct English {
-  ImgURL   :String,
-  Sentence :String,
+  pub ImgURL   :String,
+  pub Sentence :String,
 }
 #[derive(Serialize, Deserialize, Debug)]
 struct Poem {
-  Title   :String,
-  Dynasty :String,
-  Author  :String,
-  Content :Vec<String>
+  pub Title   :String,
+  pub Dynasty :String,
+  pub Author  :String,
+  pub Content :Vec<String>
 }
 #[derive(Serialize, Deserialize, Debug)]
 struct Wallpaper{
-  Title   :String,
-  ImgURL  :String,
+  pub Title   :String,
+  pub ImgURL  :String,
 }
 #[derive(Serialize, Deserialize, Debug)]
 struct Trivia  {
-	ImgURL      :String,
-	Description :String,
+	pub ImgURL      :String,
+	pub Description :String,
 }
 
 
 #[derive(Serialize, Deserialize, Debug)]
 struct CombinedData{
-  Weather: Weather,
-  // One: One,
-  // English: English,
-  // Poem: Poem,
-  // Wallpaper: Wallpaper,
-  // Trivia: Trivia,
+  pub Weather: Weather,
+  // pub One: One,
+  // pub English: English,
+  // pub Poem: Poem,
+  // pub Wallpaper: Wallpaper,
+  // pub Trivia: Trivia,
 }
 
 pub struct Render{

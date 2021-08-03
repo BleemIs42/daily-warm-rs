@@ -1,4 +1,5 @@
 mod mail;
+mod api;
 
 use mail::Render;
 
@@ -7,5 +8,7 @@ fn main() {
     let mr = Render::new(data);
     println!("Hello, world!");
     let mail =  mr.get_content();
-    println!("{}",mail);
+    // println!("{}",mail);
+
+    api::get_one();
 }
