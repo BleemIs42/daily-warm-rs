@@ -4,7 +4,7 @@ use std::string;
 use reqwest;
 use scraper::{ElementRef, Html, Selector};
 use crate::mail::{Weather, One, English, Poem, Wallpaper, Trivia};
-use serde::{ Serialize, Deserialize, de::DeserializeOwned };
+use serde::{ Deserialize, de::DeserializeOwned };
 
 pub fn get_html(url: &str) -> Html{
   let html_str = reqwest::blocking::get(url).unwrap().text().unwrap();
@@ -13,13 +13,7 @@ pub fn get_html(url: &str) -> Html{
 
 fn get_element<'a, 'b>(elm: ElementRef<'a>, selector_str: &'b str) -> ElementRef<'a>{
   let selector = Selector::parse(selector_str).unwrap();
-  let element = elm.select(&selector).next();
-
-  let sl = Selector::parse("span").unwrap();
-  let default_elmRef = Html::parse_fragment("<span></span>").select(&sl).next().unwrap();
-
-  let elmRef = element.unwrap_or(default_elmRef);
-  elmRef
+  elm.select(&selector).next().unwrap()
 }
 
 pub fn get_json<T>(url: &str) -> T
@@ -41,14 +35,6 @@ pub fn get_weather(local: &str) -> Weather{
     humidity = humidity_desc
   }
 
-  let limit_desc = get_element(wrap_dom, ".wea_about b").inner_html();
-
-  let mut limit = "".to_string();
-  if limit_desc.len() <= 4{
-    limit = limit_desc;
-  }else{
-    limit = limit_desc[4..].to_string();
-  }
   Weather{
     city: get_element(root_html, "#search .search_default em").inner_html().to_string(),
     temp: get_element(wrap_dom, ".wea_weather em").inner_html().to_string(),
@@ -56,7 +42,7 @@ pub fn get_weather(local: &str) -> Weather{
     air: get_element(wrap_dom, ".wea_alert em").inner_html().to_string(),
     humidity,
     wind: get_element(wrap_dom, ".wea_about em").inner_html().to_string(),
-    limit,
+    limit: "".to_string(),
     note: get_element(wrap_dom, ".wea_about em").inner_html().to_string().replace("。", "")
   }
 }
