@@ -2,53 +2,53 @@ use handlebars::Handlebars;
 use serde::{ Serialize, Deserialize };
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Weather{
-  pub City     :String,
-  // pub Temp     :String,
-  // pub Weather  :String,
-  // pub Air      :String,
-  // pub Humidity :String,
-  // pub Wind     :String,
-  // pub Limit    :String,
-  // pub Note     :String,
+  pub city     :String,
+  pub temp     :String,
+  pub weather  :String,
+  pub air      :String,
+  pub humidity :String,
+  pub wind     :String,
+  pub limit    :String,
+  pub note     :String,
 }
 #[derive(Serialize, Deserialize, Debug)]
 pub struct One{
-  pub Date     :String,
-  pub ImgURL   :String,
-  pub Sentence :String,
+  pub date     :String,
+  pub img_url   :String,
+  pub sentence :String,
 }
 #[derive(Serialize, Deserialize, Debug)]
-struct English {
-  pub ImgURL   :String,
-  pub Sentence :String,
+pub struct English {
+  pub img_url   :String,
+  pub sentence :String,
 }
 #[derive(Serialize, Deserialize, Debug)]
-struct Poem {
-  pub Title   :String,
-  pub Dynasty :String,
-  pub Author  :String,
-  pub Content :Vec<String>
+pub struct Poem {
+  pub title   :String,
+  pub dynasty :String,
+  pub author  :String,
+  pub content :Vec<String>
 }
 #[derive(Serialize, Deserialize, Debug)]
-struct Wallpaper{
-  pub Title   :String,
-  pub ImgURL  :String,
+pub struct Wallpaper{
+  pub title   :String,
+  pub img_url  :String,
 }
 #[derive(Serialize, Deserialize, Debug)]
-struct Trivia  {
-	pub ImgURL      :String,
-	pub Description :String,
+pub struct Trivia  {
+	pub img_url      :String,
+	pub description :String,
 }
 
 
 #[derive(Serialize, Deserialize, Debug)]
 struct CombinedData{
-  pub Weather: Weather,
-  // pub One: One,
-  // pub English: English,
-  // pub Poem: Poem,
-  // pub Wallpaper: Wallpaper,
-  // pub Trivia: Trivia,
+  pub weather: Weather,
+  // pub one: One,
+  // pub english: English,
+  // pub poem: Poem,
+  // pub wallpaper: Wallpaper,
+  // pub trivia: Trivia,
 }
 
 pub struct Render{
@@ -81,30 +81,30 @@ impl Render {
     </head>
     <body>
       <div style='max-width: 375px; margin: 20px auto;color:#444; font-size: 16px;'>
-{{#with One}}
-        <h3 >{{Date}}</h3>
+{{#with one}}
+        <h3 >{{date}}</h3>
 {{/with}}
-{{#with Weather}}
-        <h3 style='text-align: center'>{{City}}</h3>
+{{#with weather}}
+        <h3 style='text-align: center'>{{city}}</h3>
         <div style='text-align: center;font-size: 30px;'>❣️</div>
         <br>
         <div style='padding: 0;width: 100%;'>
-          <div><span style='color: #6e6e6e'>天气：</span>{{Weather}}</div>
-          <div><span style='color: #6e6e6e'>温度：</span>{{Temp}}</div>
-          <div><span style='color: #6e6e6e'>湿度：</span>{{Humidity}}</div>
-          <div><span style='color: #6e6e6e'>风向：</span>{{Wind}}</div>
-          <div><span style='color: #6e6e6e'>空气：</span>{{Air}}</div>
-          <div><span style='color: #6e6e6e'>限行：</span>{{Limit}}</div>
-          <div><span style='color: #6e6e6e'>提示：</span>{{Note}}</div>
+          <div><span style='color: #6e6e6e'>天气：</span>{{weather}}</div>
+          <div><span style='color: #6e6e6e'>温度：</span>{{temp}}</div>
+          <div><span style='color: #6e6e6e'>湿度：</span>{{humidity}}</div>
+          <div><span style='color: #6e6e6e'>风向：</span>{{wind}}</div>
+          <div><span style='color: #6e6e6e'>空气：</span>{{air}}</div>
+          <div><span style='color: #6e6e6e'>限行：</span>{{limit}}</div>
+          <div><span style='color: #6e6e6e'>提示：</span>{{note}}</div>
         </div>
 {{/with}}
         <br>
         <div style='text-align: center;font-size: 30px;'>📝</div>
         <br>
-{{#with English}}
+{{#with english}}
         <div> 
-          <div><img width='100%' src='{{ImgURL}}'></div>
-          <div style='margin-top: 10px;line-height: 1.5'>&emsp;&emsp;{{Sentence}}</div>
+          <div><img width='100%' src='{{img_url}}'></div>
+          <div style='margin-top: 10px;line-height: 1.5'>&emsp;&emsp;{{sentence}}</div>
           </div>
 {{/with}}
         <br>
@@ -112,37 +112,37 @@ impl Render {
         <br>
 {{#with Poem}}
         <div style='text-align: center'>
-          <div>{{Title}}</div>
-          <div style='font-size: 12px'>{{Dynasty}} {{Author}}</div>
+          <div>{{title}}</div>
+          <div style='font-size: 12px'>{{dynasty}} {{author}}</div>
           <br>
-          <div>{{Content}}</div>
+          <div>{{content}}</div>
         </div>
 {{/with}}
         <br>
         <div style='text-align: center;font-size: 30px;'>🔔</div>
         <br>
-{{#with One}}
+{{#with one}}
         <div>
-          <div><img width='100%' src='{{ImgURL}}'></div>
-          <div style='margin-top: 10px;line-height: 1.5'>&emsp;&emsp;{{Sentence}}</div>
+          <div><img width='100%' src='{{img_url}}'></div>
+          <div style='margin-top: 10px;line-height: 1.5'>&emsp;&emsp;{{sentence}}</div>
         </div>
 {{/with}}
         <br>
         <div style='text-align: center;font-size: 30px;'>🏞</div>
         <br>
-{{#with Wallpaper}}
+{{#with wallpaper}}
         <div>
-          <div><img width='100%' src='{{ImgURL}}'></div>
-          <div style='margin-top: 10px;line-height: 1.5;text-align: center;'>{{Title}}</div>
+          <div><img width='100%' src='{{img_url}}'></div>
+          <div style='margin-top: 10px;line-height: 1.5;text-align: center;'>{{title}}</div>
         </div>
 {{/with}}
         <br>
         <div style='text-align: center;font-size: 30px;'>📚</div>
         <br>
-{{#with Trivia}}
+{{#with trivia}}
         <div>
-          <div><img width='100%' src='{{ImgURL}}'></div>
-          <div style='margin-top: 10px;line-height: 1.5'>&emsp;&emsp;{{Description}}</div>
+          <div><img width='100%' src='{{img_url}}'></div>
+          <div style='margin-top: 10px;line-height: 1.5'>&emsp;&emsp;{{description}}</div>
         </div>
 {{/with}}
       </div>
