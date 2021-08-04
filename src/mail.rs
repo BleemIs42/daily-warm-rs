@@ -1,77 +1,76 @@
 use handlebars::Handlebars;
-use serde::{ Serialize, Deserialize };
+use lettre::message::{MultiPart, SinglePart};
+use lettre::transport::smtp::authentication::Credentials;
+use lettre::{Message, SmtpTransport, Transport};
+use serde::{Deserialize, Serialize};
+
+use crate::Config;
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Weather{
-  pub city     :String,
-  pub temp     :String,
-  pub weather  :String,
-  pub air      :String,
-  pub humidity :String,
-  pub wind     :String,
-  pub limit    :String,
-  pub note     :String,
+pub struct Weather {
+    pub city: String,
+    pub temp: String,
+    pub weather: String,
+    pub air: String,
+    pub humidity: String,
+    pub wind: String,
+    pub limit: String,
+    pub note: String,
 }
 #[derive(Serialize, Deserialize, Debug)]
-pub struct One{
-  pub date     :String,
-  pub img_url   :String,
-  pub sentence :String,
+pub struct One {
+    pub date: String,
+    pub img_url: String,
+    pub sentence: String,
 }
 #[derive(Serialize, Deserialize, Debug)]
 pub struct English {
-  pub img_url   :String,
-  pub sentence :String,
+    pub img_url: String,
+    pub sentence: String,
 }
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Poem {
-  pub title   :String,
-  pub dynasty :String,
-  pub author  :String,
-  pub content :Vec<String>
+    pub title: String,
+    pub dynasty: String,
+    pub author: String,
+    pub content: String,
 }
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Wallpaper{
-  pub title   :String,
-  pub img_url  :String,
+pub struct Wallpaper {
+    pub title: String,
+    pub img_url: String,
 }
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Trivia  {
-	pub img_url      :String,
-	pub description :String,
+pub struct Trivia {
+    pub img_url: String,
+    pub description: String,
 }
-
 
 #[derive(Serialize, Deserialize, Debug)]
-struct CombinedData{
-  pub weather: Weather,
-  // pub one: One,
-  // pub english: English,
-  // pub poem: Poem,
-  // pub wallpaper: Wallpaper,
-  // pub trivia: Trivia,
+pub struct CombinedData {
+    pub weather: Weather,
+    pub one: One,
+    pub english: English,
+    pub poem: Poem,
+    pub wallpaper: Wallpaper,
+    // pub trivia: Trivia,
 }
 
-pub struct Render{
-  data: String
+pub struct Render {
+    data: CombinedData,
 }
 
 impl Render {
-  pub fn new(data: String) -> Self{
-    Self{
-      data: data
+    pub fn new(data: CombinedData) -> Self {
+        Self { data: data }
     }
-  }
-  pub fn get_content(&self) -> String{
-    let mut handlebars = Handlebars::new();
-    handlebars.register_template_string("mail_tpl", &self.get_tpl());
-    let data = serde_json::from_str::<CombinedData>(self.data.as_str()).unwrap();
-    println!("data:   {:?}", data);
-    handlebars.render("mail_tpl", &data).unwrap()
-    // mail
-  }
+    pub fn get_content(&self) -> String {
+        let mut handlebars = Handlebars::new();
+        handlebars.register_template_string("mail_tpl", &self.get_tpl());
+        handlebars.render("mail_tpl", &self.data).unwrap()
+    }
 
-  pub fn get_tpl(&self)->String{
-    "<!DOCTYPE html>
+    pub fn get_tpl(&self) -> String {
+        "<!DOCTYPE html>
     <html lang='en'>
     <head>
       <meta charset='UTF-8'>
@@ -110,12 +109,12 @@ impl Render {
         <br>
         <div style='text-align: center;font-size: 30px;'>📖</div>
         <br>
-{{#with Poem}}
+{{#with poem}}
         <div style='text-align: center'>
           <div>{{title}}</div>
           <div style='font-size: 12px'>{{dynasty}} {{author}}</div>
           <br>
-          <div>{{content}}</div>
+          <div style='white-space:pre-wrap;'>{{content}}</div>
         </div>
 {{/with}}
         <br>
@@ -149,6 +148,29 @@ impl Render {
       <br><br>
     </body>
     </html>
-    ".to_string()
-  }
+    "
+        .to_string()
+    }
+}
+
+pub fn send(config: &Config, body: String) {
+    let email = Message::builder()
+        .from(config.from.parse().unwrap())
+        .to(config.to.email.parse().unwrap())
+        .subject(&config.subject)
+        .multipart(MultiPart::related().singlepart(SinglePart::html(body)))
+        .unwrap();
+
+    let creds = Credentials::new(config.username.clone(), config.password.clone());
+
+    let mailer = SmtpTransport::relay(&config.host)
+        .unwrap()
+        // .port(config.port)
+        .credentials(creds)
+        .build();
+
+    match mailer.send(&email) {
+        Ok(_) => println!("Email sent successfully!"),
+        Err(e) => panic!("Could not send email: {:?}", e),
+    }
 }

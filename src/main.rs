@@ -1,22 +1,42 @@
-mod mail;
 mod api;
+mod mail;
 
-use mail::Render;
+use serde_derive::Deserialize;
+use std::fs;
+
+#[derive(Deserialize)]
+struct MailTo {
+    email: String,
+    local: String,
+}
+
+#[derive(Deserialize)]
+pub struct Config {
+    username: String,
+    password: String,
+    host: String,
+    port: u16,
+    subject: String,
+    cron: String,
+    from: String,
+    to: MailTo,
+    mode: String,
+}
 
 fn main() {
-    // let data = 
-    let data = "{\"weather\":{\"city\":\"test city\"}}".to_string();
-    let mr = Render::new(data);
+    let config = get_config();
+    let data = api::get_data(&config);
+    let mr = mail::Render::new(data);
     println!("Hello, world!");
-    // let mail =  mr.get_content();
-    // println!("{}",mail);
+    let mail_content = mr.get_content();
+    // println!("{}", mail_content);
+    // fs::write("mail.html", mail_content.clone()).unwrap();
+    mail::send(&config, mail_content);
+}
 
-    let weather = api::get_weather("shaanxi/xian");
-    let one = api::get_one();
-    let english = api::get_english();
-    let poem = api::get_poem();
-    let wallpaper = api::get_wallpaper();
-    // let trivia = api::get_trivia();
-
-    println!("{:?} \n{:?}\n{:?}\n{:?}\n{:?}", weather, one, english, poem, wallpaper);
+fn get_config() -> Config {
+    let toml_config = String::from_utf8_lossy(&fs::read(".env").unwrap())
+        .parse::<String>()
+        .unwrap();
+    toml::from_str(&toml_config).unwrap()
 }
